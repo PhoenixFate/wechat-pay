@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>电脑版扫码支付</title>
+    <script type="text/javascript" src="./js/vue.min.js"></script>
+    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./js/http.js"></script>
+    <script type="text/javascript" src="./js/layer/layer.js"></script>
+    <script type="text/javascript" src="./js/qrcode.min.js"></script>
+    <style>
+        body {
+            background-color: #f1f5f8;
+            font-family: "微软雅黑";
+        }
+        .top_bar {
+            height: 30px;
+            background-color: #ebebeb;
+            line-height: 30px;
+            text-align: right;
+        }
+        .container,.top_bar .content {
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .pw_hd {
+            margin: 15px 10px 10px 10px;
+            overflow: hidden;
+        }
+        .pw_hd .logo {
+            display: inline-block;
+            width: 120px;
+            height: 32px;
+            background: url() 0 0 no-repeat;
+        }
+        .pw_hd .price {
+            float: right;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .pw_hd .price span {
+            font-size: 24px;
+            color: #f76118;
+        }
+        .pw_bd {
+            padding: 30px 35px 35px;
+            background-color: #fff;
+            border-top: 6px solid #ff8700;
+        }
+        .clearfix,.container {
+            zoom: 1;
+        }
+        .pw_bd .img {
+            float: right;
+            display: inline;
+            margin-right: 70px;
+            width: 333px;
+            height: 466px;
+            background: url(https://css.mafengwo.net/images/sales/wx-sweep2.jpg) no-repeat;
+        }
+        .pw_bd .qrcode {
+            float: left;
+            display: inline;
+            margin: 50px 0 0 140px;
+            width: 200px;
+            padding: 17px;
+            border: 1px solid #dbdbe2;
+            font-size: 16px;
+            color: #333;
+            line-height: 28px;
+            text-align: center;
+        }
+        .clearfix:after, .container:after {
+            content: '';
+            clear: both;
+            display: table;
+            height: 0;
+            overflow: hidden;
+        }
+        .pw_bd .other_payment {
+            margin: -20px 0 0 0;
+            font-size: 14px;
+        }
+        .pw_bd .other_payment a {
+            display: inline-block;
+            color: #ff9d00;
+        }
+        #qrcode img{
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="top_bar">
+        <div class="content">
+            <a href="" target="_blank">用户</a>
+            <span>|</span>
+            <a href="" target="_blank">我的订单</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="pw_hd">
+            <a class="logo" href="" target="_blank"></a>
+            <div class="price">
+                支付总金额：<span>￥38.00</span>
+            </div>
+        </div>
+        <div class="pw_bd">
+            <h2>微信支付</h2>
+            <div class="sweep clearfix">
+                <div class="img"></div>
+                <div class="qrcode">
+                    <div id="qrcode"></div>
+                    <div style="margin-top: 13px">请使用微信扫一扫<br>扫描二维码支付</div>
+                </div>
+            </div>
+            <div class="other_payment"><a href=""><i></i>选择其他支付方式</a></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+
+    new Vue({
+        el:'#app',
+        data(){
+            return {
+                ewmUrl:'',
+            }
+        },
+        methods:{
+          init(){
+              http.get("/v3/nativePay",{},res=>{
+                  debugger
+                 res = JSON.parse(res)
+                let ewmUrl = res.code_url
+                console.log(ewmUrl)
+                  let qrcode = new QRCode(document.getElementById("qrcode"), {
+                      width : 100,
+                      height : 100
+                  });
+                qrcode.makeCode(ewmUrl);
+              })
+          }
+        },
+        mounted(){
+            this.init()
+        }
+    })
+</script>
+</body>
+</html>

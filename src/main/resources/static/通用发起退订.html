@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>通用发起退订</title>
+    <script src="./js/jquery-3.3.1.min.js"></script>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/http.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>通用发起退订</h1>
+    <input v-model="refundOrderCode">
+    <button @click="refundOrderHandle()">退订</button>
+    <h1>通用退款查询</h1>
+    <input v-model="queryOrderCode">
+    <select v-model="queryType">
+        <option value="transactionId">微信订单号</option>
+        <option value="outTradeNo">商户订单号</option>
+        <option value="outRefundNo">商户退款单号</option>
+        <option value="refundId">微信退款单号</option>
+    </select>
+    <button @click="queryOrderHandle()">查询</button>
+</div>
+<script>
+    new Vue({
+        el:'#app',
+        data(){
+            return {
+                refundOrderCode:'',//退订订单号
+                queryOrderCode:'',//查询编号
+                queryType:''//查询编号类型
+            }
+        },
+        methods:{
+            refundOrderHandle(){
+                if (!this.refundOrderCode){
+                    alert('订单号不能为空')
+                    return false
+                }
+                let data = {outTradeNo:this.refundOrderCode}
+                http.get('/wxCommon/refund',data,res=>{
+                    console.log(res)
+                })
+            },
+            queryOrderHandle(){
+                if (!this.queryOrderCode){
+                    alert('查询编号不能为空')
+                    return false
+                }
+                if (!this.queryType){
+                    alert('查询编号类型不能为空')
+                    return false
+                }
+                let data = {}
+                data[this.queryType] = this.queryOrderCode
+                http.get('/wxCommon/refundQuery',data,res=>{
+                    console.log(res)
+                })
+            }
+        },
+        mounted() {
+
+        }
+    })
+</script>
+</body>
+</html>

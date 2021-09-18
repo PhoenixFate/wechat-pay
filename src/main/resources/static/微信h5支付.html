@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微信v3的h5支付测试</title>
+    <script src="../../../js/jquery-1.11.3.min.js"></script>
+    <script src="../../../js/vue.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<div id="app">
+    <h1>微信支付v3的h5支付测试</h1>
+    <button @click="h5PayTest()">点击购买</button>
+</div>
+<body>
+<script>
+    function httpGet(url, params, back) {
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: params,
+            success: function (res) {
+                back(res)
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert(errorThrown)
+            }
+        })
+    }
+    new Vue({
+        el:'#app',
+        data(){
+            return {}
+        },
+        methods:{
+            h5PayTest(){
+                httpGet('/v3/h5Pay',{},res=>{
+                    debugger
+                    alert(res.data)
+                    let data = JSON.parse(res.data)
+                    location.href = data['h5_url']
+                })
+            }
+        },
+        mounted(){
+
+        }
+    })
+</script>
+</body>
+</html>
